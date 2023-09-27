@@ -1,4 +1,6 @@
 if __name__ != "__main__":
+    import json
+
     class Parser:
         request_JSON = {
             "requestLine": {
@@ -20,12 +22,16 @@ if __name__ != "__main__":
             "body": ''
         }
 
+        ######### APIs
         @staticmethod
         def parseRequest(RAW):
+            # Converting to string
+            RAW = RAW.decode()
+
             # Split RAW HTTP to head and body
             head = None
             body = None
-            head_body_splitted = RAW.split(b"\r\n\r\n")
+            head_body_splitted = RAW.split("\r\n\r\n")
 
             # If RAW HTTP is splittable to two parts then head and body exists
             if len(head_body_splitted) == 2: head, body = head_body_splitted
@@ -33,7 +39,7 @@ if __name__ != "__main__":
             # Else only head exists
             else: head = RAW
 
-            headers = head.split(b"\r\n")
+            headers = head.split("\r\n")
 
             # No headers
             if len(headers) == 0:
@@ -54,10 +60,13 @@ if __name__ != "__main__":
 
         @staticmethod
         def parseResponse(RAW):
+            # Converting to string
+            RAW = RAW.decode()
+
             # Split RAW HTTP to head and body
             head = None
             body = None
-            head_body_splitted = RAW.split(b"\r\n\r\n")
+            head_body_splitted = RAW.split("\r\n\r\n")
 
             # If RAW HTTP is splittable to two parts then head and body exists
             if len(head_body_splitted) == 2: head, body = head_body_splitted
@@ -65,7 +74,7 @@ if __name__ != "__main__":
             # Else only head exists
             else: head = RAW
 
-            headers = head.split(b"\r\n")
+            headers = head.split("\r\n")
 
             # No headers
             if len(headers) == 0:
@@ -89,8 +98,8 @@ if __name__ != "__main__":
         ######### Helpers
         #### HTTP Request
         @staticmethod
-        def handleRequestLine(requestLineRAW):
-            parts = requestLineRAW.split(b' ')
+        def handleRequestLine(requestLine):
+            parts = requestLine.split(' ')
             if len(parts) != 3:
                 print("Invalid HTTP request line")
                 return False
@@ -102,7 +111,7 @@ if __name__ != "__main__":
         @staticmethod
         def handleRequestHeaders(headers):
             for header in headers:
-                splitted_header = header.split(b': ')
+                splitted_header = header.split(': ')
                 if len(splitted_header) != 2:
                     print("Invalid HTTP header: ", splitted_header)
                     return False
@@ -110,16 +119,22 @@ if __name__ != "__main__":
                 Parser.request_JSON["headers"][splitted_header[0]] = splitted_header[1]
 
         @staticmethod
-        def handleRequestBody(bodyRAW):
-            if bodyRAW is None:
+        def handleRequestBody(body):
+            if body is None:
                 Parser.request_JSON["body"] = ''
                 return
 
-            Parser.request_JSON["body"] = bodyRAW
+            # Check if content type is json then set body to json data from raw body
+            if(
+                "Content-Type" in Parser.request_JSON["headers"] and
+                Parser.request_JSON["headers"]["Content-Type"] == "application/json"
+            ): Parser.request_JSON["body"] = json.loads(body)
+
+            else: Parser.request_JSON["body"] = body
 
         #### HTTP Response
-        def handleStatusLine(statusLineRAW):
-            parts = statusLineRAW.split(b' ')
+        def handleStatusLine(statusLine):
+            parts = statusLine.split(' ')
             if len(parts) != 3:
                 print("Invalid HTTP status line")
                 return False
@@ -131,7 +146,7 @@ if __name__ != "__main__":
         @staticmethod
         def handleResponseHeaders(headers):
             for header in headers:
-                splitted_header = header.split(b': ')
+                splitted_header = header.split(': ')
                 if len(splitted_header) != 2:
                     print("Invalid HTTP header: ", splitted_header)
                     return False
@@ -139,10 +154,10 @@ if __name__ != "__main__":
                 Parser.response_JSON["headers"][splitted_header[0]] = splitted_header[1]
 
         @staticmethod
-        def handleResponseBody(bodyRAW):
-            if bodyRAW is None:
+        def handleResponseBody(body):
+            if body is None:
                 Parser.response_JSON["body"] = ''
                 return
 
-            Parser.response_JSON["body"] = bodyRAW
+            Parser.response_JSON["body"] = body
 
