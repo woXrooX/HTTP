@@ -31,3 +31,27 @@ Connection: close
     <p>Hello World, this is a very simple HTML document.</p>
   </body>
 </html>
+
+
+--------------------------------------------
+Client request
+
+POST /logIn HTTP/1.1\r\n
+Accept: */*\r\n
+Connection: keep-alive\r\n
+Content-Length: 326\r\n
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+\r\n
+------WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+Content-Disposition: form-data; name="eMail"\r\n
+\r
+
+------WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+Content-Disposition: form-data; name="password"\r\n
+\r
+
+------WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+Content-Disposition: form-data; name="for"\r\n
+\r
+logIn
+------WebKitFormBoundary889OWpkVcMRuBHFj--\r\n
