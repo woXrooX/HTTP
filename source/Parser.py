@@ -82,7 +82,7 @@ if __name__ != "__main__":
 			return Parser.JSON
 
 
-		######### Helpers
+		######### Handlers
 		#### HTTP Request
 		@staticmethod
 		def handleRequestLine(requestLine):
@@ -136,11 +136,59 @@ if __name__ != "__main__":
 		def handleBody(body):
 			if body is None: return ''
 
+			# If we don't have content type we can't  parse the body properly
+			if "Content-Type" not in Parser.JSON["headers"]: return
+
 			# Check if content type is json then set body to json data from raw body
-			if(
-				"Content-Type" in Parser.JSON["headers"] and
-				Parser.JSON["headers"]["Content-Type"] == "application/json"
-			): return json.loads(body)
+			if Parser.JSON["headers"]["Content-Type"] == "application/json": return Parser.handleJSON(body)
+
+			# Check for content type for multipart/form-data
+			elif Parser.JSON["headers"]["Content-Type"].startswith('multipart/form-data'): return Parser.handleMultiPartFormData(body)
 
 			else: return body
 
+		#### Body handlers
+		# JSON
+		@staticmethod
+		def handleJSON(body):
+			try: return json.loads(body)
+			except: return json.loads({})
+
+		# multipart/form-data
+		@staticmethod
+		def handleMultiPartFormData(body):
+			splitted_content_type = Parser.JSON["headers"]["Content-Type"].split("multipart/form-data; boundary=", 1)
+
+			# Check if content type is properly splittable
+			if len(splitted_content_type) != 2: return
+
+			boundary = splitted_content_type[1]
+
+			parts = body.split("--"+boundary)
+
+			# Skip first and last parts
+			parts = parts[1: -1]
+
+			# Create formData dict in parser.JSON
+			Parser.JSON["formData"] = {}
+
+			# Loop through parts divided by boundary
+			for part in parts:
+				splitted_part = part.split("\r\n\n", 1)
+
+				if len(splitted_part) != 2: continue
+
+				key, value = splitted_part
+
+				# Remove: Content-Disposition: form-data; name="
+				key = key.split('Content-Disposition: form-data; name="', 1)[1]
+				# Remove last '"'
+				key = key[:-1]
+
+				# Remove value "\r\n"s
+				value = value.split('\r\n', 1)[0]
+
+				Parser.JSON["formData"][key] = value
+
+			# Also return raw body
+			return body
