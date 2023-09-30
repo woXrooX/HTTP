@@ -36,22 +36,34 @@ Connection: close
 --------------------------------------------
 Client request
 
-POST /logIn HTTP/1.1\r\n
-Accept: */*\r\n
-Connection: keep-alive\r\n
-Content-Length: 326\r\n
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+POST /logIn HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9,ru;q=0.8
+Connection: keep-alive
+Content-Length: 329
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryPwyQ0P1OukvxrwHg
+DNT: 1
+Host: localhost:8000
+Origin: http://localhost:8000
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: same-origin
+Sec-Fetch-Site: same-origin
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36
+sec-ch-ua: "Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Linux"\r\n
 \r\n
-------WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+------WebKitFormBoundaryPwyQ0P1OukvxrwHg\r\n
 Content-Disposition: form-data; name="eMail"\r\n
-\r
-
-------WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+\n
+\r\n
+------WebKitFormBoundaryPwyQ0P1OukvxrwHg\r\n
 Content-Disposition: form-data; name="password"\r\n
-\r
-
-------WebKitFormBoundary889OWpkVcMRuBHFj\r\n
+\n
+asd\r\n
+------WebKitFormBoundaryPwyQ0P1OukvxrwHg\r\n
 Content-Disposition: form-data; name="for"\r\n
-\r
-logIn
-------WebKitFormBoundary889OWpkVcMRuBHFj--\r\n
+\n
+logIn\r\n
+------WebKitFormBoundaryPwyQ0P1OukvxrwHg--
